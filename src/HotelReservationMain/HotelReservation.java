@@ -8,43 +8,38 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-public class HotelReservation
-{
+public class HotelReservation {
 
     private List<Hotel> hotels;
 
-    public HotelReservation()
-    {
+    public HotelReservation() {
         this.hotels = new ArrayList<Hotel>();
     }
 
-    public void add(Hotel hotel) // add hotel.
+    public void add(Hotel hotel) //add hotel.
     {
         this.hotels.add(hotel);
     }
 
-    public List<Hotel> getHotel()
-    {
+    public List<Hotel> getHotelList() {
         return this.hotels;
     }
 
-    public Map<Integer, Hotel> searchFor(String date1, String date2)
-    {
+    public Map<Integer, Hotel> searchFor(String date1, String date2) {
         int totalDays = countTotalDays(date1, date2);
         int weekDays = countWeekDays(date1, date2);
         int weekendDays = totalDays - weekDays;
         return getCheapestHotels(weekDays, weekendDays);
     }
 
-    public Map<Integer, Hotel> getCheapestHotels(int weekDays, int weekendDays)
-    {
+    public Map<Integer, Hotel> getCheapestHotels(int weekDays, int weekendDays) {
         Map<Integer, Hotel> hotelCosts = new HashMap<>();
         Map<Integer, Hotel> sortedHotelCosts = new HashMap<>();
         if (hotels.size() == 0)
             return null;
-        this.hotels.stream().forEach(
-                n -> hotelCosts.put(n.getRegularWeekdayRate() * weekDays + n.getRegularWeekendRate() * weekendDays, n));
+        for (Hotel n : this.hotels) {
+            hotelCosts.put(n.getRegularWeekdayRate() * weekDays + n.getRegularWeekendRate() * weekendDays, n);
+        }
         Integer cheap = hotelCosts.keySet().stream().min(Integer::compare).get();
         hotelCosts.forEach((k, v) -> {
             if (k == cheap)
@@ -61,8 +56,7 @@ public class HotelReservation
         return totalDays;
     }
 
-    public int countWeekDays(String date1, String date2)
-    {
+    public int countWeekDays(String date1, String date2) {
 
         LocalDate startDate = toLocalDate(date1);
         LocalDate endDate = toLocalDate(date2);
@@ -78,9 +72,8 @@ public class HotelReservation
         return totalWeekDays;
     }
 
-    public LocalDate toLocalDate(String date)
-    {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMMyyyy");
+    public LocalDate toLocalDate(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
         LocalDate localDate = LocalDate.parse(date, formatter);
         return localDate;
     }
